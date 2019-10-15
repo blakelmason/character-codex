@@ -1,0 +1,13 @@
+body {
+  padding: 0 !important;
+  overflow-y: scroll;
+}
+
+.message > .modal-dialog {
+  width: fit-content;
+  height: 85px;
+}
+
+p {
+  margin-bottom: 0px;
+}
