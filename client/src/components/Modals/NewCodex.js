@@ -1,22 +1,18 @@
 import React, { Component } from 'react'
-import { Modal, Form, Button } from 'react-bootstrap'
+import { Form, Button, Modal } from 'react-bootstrap'
 import axios from 'axios'
 
-import Error from './Error'
-
-class EditCharacter extends Component {
+class NewCodex extends Component {
   constructor(props) {
     super(props)
-    this.state = { ...this.default() }
+    this.state = this.default()
   }
 
   default() {
-    const character = this.props.character
-    console.log(character)
     return {
-      name: character.name || '',
-      description: character.description || '',
-      art: character.art || '',
+      name: '',
+      description: '',
+      art: '',
       validated: false
     }
   }
@@ -24,49 +20,51 @@ class EditCharacter extends Component {
   handler = event => this.setState({ [event.target.name]: event.target.value })
 
   submit = event => {
+    event.preventDefault()
     const form = event.currentTarget
     if (form.checkValidity() === false) {
       event.stopPropagation()
     } else {
-      this.setState({ show: false })
-      const m = this.props.modal
-      m({ m: true, mBody: 'loading' })
-      axios
-        .post('/codex/update', {
-          name: this.state.name,
-          description: this.state.description,
-          art: this.state.art
-        })
-        .then(() => {
-          this.setState({ ...this.default() })
-          this.props.reset()
-          const time = 1000
-          setTimeout(() => m({ mAnimation: 'fadeOut faster' }), time)
-          setTimeout(
-            () => m({ mBody: 'updated', mAnimation: 'fadeIn faster' }),
-            time + 500
-          )
-          setTimeout(() => m({ mAnimation: false }), time + 1000)
-          setTimeout(() => m({ m: false, mAnimation: '' }), time + 1500)
-        })
-        .catch(err => {
-          console.error(err)
-          m({ mBody: <Error /> })
-          setTimeout(() => m({ m: false }), 2000)
-        })
+      const set = this.props.set
+      set({ modal: 'message', message: 'loading' })
+      setTimeout(() => {
+        axios
+          .post('/codex/new', {
+            name: this.state.name,
+            description: this.state.description,
+            art: this.state.art
+          })
+          .then(() => {
+            this.setState(this.default)
+            this.props.getLibrary().then(() => {
+              set({ animated: 'fadeOut faster' })
+              setTimeout(
+                () =>
+                  set({
+                    message: 'Codex created!',
+                    animated: 'fadeIn faster'
+                  }),
+                500
+              )
+              setTimeout(() => set({ animated: '' }), 1000)
+              setTimeout(() => set({ modal: false }), 1500)
+            })
+          })
+          .catch(err => {
+            console.error(err)
+            set({ modal: 'error', reopen: 'newCodex' })
+          })
+      }, 1200)
     }
     this.setState({ validated: true })
-    event.preventDefault()
   }
+
+  toggle = () => this.props.set({ modal: [] })
+
   render() {
     const { name, description, art, validated } = this.state
     return (
-      <Modal
-        show={this.props.show}
-        centered
-        onHide={this.props.toggle}
-        size="lg"
-      >
+      <Modal show={this.props.show} centered onHide={this.toggle} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>New Character</Modal.Title>
         </Modal.Header>
@@ -80,7 +78,6 @@ class EditCharacter extends Component {
                 onChange={this.handler}
                 value={name}
                 name="name"
-                defaultValue={this.props.default}
               />
             </Form.Group>
             <Form.Group>
@@ -108,7 +105,7 @@ class EditCharacter extends Component {
             <div className="text-right">
               <Button
                 variant="secondary"
-                onClick={this.props.toggle}
+                onClick={this.toggle}
                 className="mr-3"
               >
                 Close
@@ -124,4 +121,4 @@ class EditCharacter extends Component {
   }
 }
 
-export default EditCharacter
+export default NewCodex

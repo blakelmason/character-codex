@@ -19,11 +19,14 @@ router.post('/new', (req, res) => {
     .catch(err => {
       throw new Error(err)
     })
-  // Codex.create(req.body)
-  //   .then(() => res.sendStatus(200))
-  //   .catch(err => {
-  //     throw new Error(err)
-  //   })
+})
+
+router.post('/update', (req, res) => {
+  Codex.create(req.body)
+    .then(() => res.send('Codex created.'))
+    .catch(err => {
+      throw new Error(err)
+    })
 })
 
 export default router

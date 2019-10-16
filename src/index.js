@@ -7,7 +7,7 @@ import bodyParser from 'body-parser'
 import codexRoutes from './routes/codex.routes'
 
 const app = express()
-const PORT = process.env.port || 3000
+const PORT = process.env.port || 3001
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())

@@ -6,7 +6,7 @@ function Library({ library, reset }) {
     <div className="p-4 border shadow-sm rounded-lg">
       {library.map((codex, index) => (
         <Codex
-          {...codex}
+          data={codex}
           i={index}
           key={`codex-${index}`}
           last={index === library.length - 1 ? true : false}

@@ -6,6 +6,7 @@ body {
 .message > .modal-dialog {
   width: fit-content;
   height: 85px;
+  margin: auto;
 }
 
 p {

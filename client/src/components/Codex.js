@@ -1,11 +1,9 @@
 import React, { useState } from 'react'
 import { Button, Image } from 'react-bootstrap'
 
-import EditCharacter from './EditCharacter'
-
-function Codex({ name, art, description, i, last, reset }) {
+function Codex({ data, i, last }) {
+  const { name, art, description } = data
   const [artwork, toggleArt] = useState(false)
-  const [edit, toggleEdit] = useState(false)
   return (
     <div className={`d-flex ${!last && 'mb-5'}`}>
       <div className="mr-3" style={{ marginTop: 13 }}>
@@ -52,60 +50,28 @@ function Codex({ name, art, description, i, last, reset }) {
               <Button
                 size="sm"
                 variant="outline-primary"
-                onClick={() => toggleEdit(!edit)}
+                onClick={() => {
+                  console.log('hi')
+                }}
               >
                 Edit
               </Button>
             </div>
           </div>
         </div>
-        <div className="border-bottom bg-light py-1">Description</div>
+        <div className="border-bottom bg-light py-1 text-center">
+          Description
+        </div>
         <div className="text-left p-3">
-          <p style={{ textJustify: 'inter-word' }}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum
-            dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-            veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in
-            voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-            officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit
-            amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-            ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-            nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-            consequat. Duis aute irure dolor in reprehenderit in voluptate velit
-            esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-            cupidatat non proident, sunt in culpa qui officia deserunt mollit
-            anim id est laborum.Lorem ipsum dolor sit amet, consectetur
-            adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo
-            consequat. Duis aute irure dolor in reprehenderit in voluptate velit
-            esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-            cupidatat non proident, sunt in culpa qui officia deserunt mollit
-            anim id est laborum.Lorem ipsum dolor sit amet, consectetur
-            adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo
-            consequat. Duis aute irure dolor in reprehenderit in voluptate velit
-            esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-            cupidatat non proident, sunt in culpa qui officia deserunt mollit
-            anim id est laborum.{description}
-          </p>
+          <p style={{ textAlign: 'justify' }}>{description}</p>
         </div>
       </div>
-      <EditCharacter
+      {/* <EditCharacter
         character={{ name: name, art: art, description: description }}
         show={edit}
         toggle={() => toggleEdit(!edit)}
         reset={reset}
-      />
+      /> */}
     </div>
   )
 }
@@ -121,7 +87,8 @@ function Artwork({ toggle, url }) {
         width: '100vw',
         height: '100vh',
         background: 'rgba(0, 0, 0, 0.7)',
-        cursor: 'pointer'
+        cursor: 'pointer',
+        userSelect: 'none'
       }}
       className="d-flex align-items-center"
       onClick={toggle}
