@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 const codex = new mongoose.Schema({
   name: String,
-  art: String,
+  artwork: String,
   description: String
 })
 
