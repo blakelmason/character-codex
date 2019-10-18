@@ -5,12 +5,14 @@ import axios from 'axios'
 class EditCodex extends Component {
   state = {
     name: '',
-    art: '',
-    description: ''
+    description: '',
+    artwork: '',
+    validated: false
   }
 
-  componentDidUpdate = prevProps => {
-    prevProps !== this.props && this.setState(this.props)
+  componentDidUpdate(prevProps) {
+    if (prevProps.edit !== this.props.edit)
+      this.setState({ ...this.props.edit })
   }
 
   handler = event => this.setState({ [event.target.name]: event.target.value })
@@ -21,51 +23,53 @@ class EditCodex extends Component {
     if (form.checkValidity() === false) {
       event.stopPropagation()
     } else {
-      const set = this.context.set
-      set({ show: false })
-      setTimeout(
-        () => set({ modal: 'message', show: true, message: 'loading' }),
-        200
-      )
+      const set = this.props.set
+      set({ modal: 'message', message: 'loading' })
       setTimeout(() => {
         axios
           .post('/codex/update', {
             name: this.state.name,
             description: this.state.description,
-            art: this.state.art
+            artwork: this.state.artwork,
+            id: this.props.edit._id
           })
           .then(() => {
-            this.context.getLibrary().then(() => {
-              this.setState({ ...this.default() })
-              set({ animation: 'fadeOut faster' })
+            this.setState({ validated: false })
+            this.props.getLibrary().then(() => {
+              set({ animated: 'fadeOut faster' })
               setTimeout(
                 () =>
                   set({
                     message: 'Codex updated!',
-                    animation: 'fadeIn faster'
+                    animated: 'fadeIn faster'
                   }),
                 500
               )
-              setTimeout(() => set({ animation: '' }), 1000)
-              setTimeout(() => set({ show: false }), 1500)
+              setTimeout(() => set({ animated: '' }), 1000)
+              setTimeout(() => set({ modal: false }), 1500)
             })
           })
           .catch(err => {
             console.error(err)
-            set({ show: false })
-            setTimeout(() => set({ show: true, modal: 'error' }), 200)
+            set({ modal: 'error', reopen: 'editCodex' })
           })
       }, 1200)
     }
     this.setState({ validated: true })
   }
 
-  toggle = () => this.context.set({ show: false })
+  close = () => this.props.set({ modal: false })
 
   render() {
-    const { name, description, art, validated } = this.state
+    const { name, description, artwork, validated } = this.state
     return (
-      <Modal show={this.props.show} centered onHide={this.toggle} size="lg">
+      <Modal
+        show={this.props.show}
+        centered
+        onHide={this.close}
+        size="lg"
+        backdrop="static"
+      >
         <Modal.Header closeButton>
           <Modal.Title>New Character</Modal.Title>
         </Modal.Header>
@@ -77,7 +81,7 @@ class EditCodex extends Component {
                 required
                 type="text"
                 onChange={this.handler}
-                value={name}
+                value={name || ''}
                 name="name"
               />
             </Form.Group>
@@ -87,8 +91,8 @@ class EditCodex extends Component {
                 required
                 type="text"
                 onChange={this.handler}
-                value={art}
-                name="art"
+                value={artwork || ''}
+                name="artwork"
               />
             </Form.Group>
             <Form.Group>
@@ -98,21 +102,14 @@ class EditCodex extends Component {
                 as="textarea"
                 rows="10"
                 onChange={this.handler}
-                value={description}
+                value={description || ''}
                 name="description"
               />
             </Form.Group>
             <hr />
             <div className="text-right">
-              <Button
-                variant="secondary"
-                onClick={this.toggle}
-                className="mr-3"
-              >
-                Close
-              </Button>
               <Button variant="primary" type="submit">
-                Create Codex
+                Update
               </Button>
             </div>
           </Form>
@@ -135,7 +132,7 @@ export default EditCodex
 //     return {
 //       name: data.name || '',
 //       description: data.description || '',
-//       art: data.art || '',
+//       artwork: data.artwork || '',
 //       validated: false
 //     }
 //   }
@@ -155,7 +152,7 @@ export default EditCodex
 //         .post('/codex/update', {
 //           name: this.state.name,
 //           description: this.state.description,
-//           art: this.state.art
+//           artwork: this.state.artwork
 //         })
 //         .then(() => {
 //           this.setState({ ...this.default() })
@@ -179,12 +176,12 @@ export default EditCodex
 //     event.preventDefault()
 //   }
 //   render() {
-//     const { name, description, art, validated } = this.state
+//     const { name, description, artwork, validated } = this.state
 //     return (
 //       <Modal
 //         show={this.props.show}
 //         centered
-//         onHide={this.props.toggle}
+//         onHide={this.props.close}
 //         size="lg"
 //       >
 //         <Modal.Header closeButton>
@@ -209,8 +206,8 @@ export default EditCodex
 //                 required
 //                 type="text"
 //                 onChange={this.handler}
-//                 value={art}
-//                 name="art"
+//                 value={artwork}
+//                 name="artwork"
 //               />
 //             </Form.Group>
 //             <Form.Group>
@@ -228,7 +225,7 @@ export default EditCodex
 //             <div className="text-right">
 //               <Button
 //                 variant="secondary"
-//                 onClick={this.props.toggle}
+//                 onClick={this.props.close}
 //                 className="mr-3"
 //               >
 //                 Close

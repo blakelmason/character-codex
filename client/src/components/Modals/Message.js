@@ -14,7 +14,6 @@ function Message({ message, show, animated }) {
     >
       <Modal.Body>
         <div style={{ fontSize: '2rem' }}>
-          {console.log(animated)}
           {{ loading: <Loading /> }[message] || message}
         </div>
       </Modal.Body>

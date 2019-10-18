@@ -4,17 +4,18 @@ import axios from 'axios'
 
 import Library from './components/Library'
 import Modals from './components/Modals/Modals'
+import Display from './components/Display'
 
 import './App.css'
 
 class App extends Component {
   state = {
     library: [],
+    display: false,
 
     //modals
     modal: [],
     message: '',
-    artwork: '',
     animated: '',
     edit: {},
     reopen: ''
@@ -37,40 +38,51 @@ class App extends Component {
 
   render() {
     const { set, getLibrary } = this
-    const { library, ...modals } = this.state
+    const { library, display, ...modalsState } = this.state
     return (
-      <div className="p-5" style={{ minWidth: 800 }}>
-        <div
-          className="display-4 text-center"
-          style={{ fontFamily: `'Della Respira', serif` }}
-        >
-          D&D Character Codex
-        </div>
-        <div className="mt-3 mb-4 text-center" style={{ fontSize: '1.5rem' }}>
-          Adventurer Information
-        </div>
-        <hr className="mb-4 mx-auto" style={{ maxWidth: 1200 }} />
-        <div className="text-center">
-          <Button
-            onClick={() =>
-              set({
-                modal: 'newCodex',
-                show: true
-              })
-            }
-          >
-            New Character
-          </Button>
-        </div>
-        <div className="my-4 mx-auto" style={{ maxWidth: 1200 }}>
-          {library.length > 0 ? (
-            <Library library={library} />
-          ) : (
-            <div className="text-center">No codices found in your library.</div>
-          )}
-        </div>
-        <Modals {...modals} set={set} getLibrary={getLibrary} />
-      </div>
+      <>
+        {display !== false ? (
+          <Display codex={library[display]} set={set} />
+        ) : (
+          <div className="p-5" style={{ minWidth: 800 }}>
+            <div
+              className="display-4 text-center"
+              style={{ fontFamily: `'Della Respira', serif` }}
+            >
+              D&D Character Codex
+            </div>
+            <div
+              className="mt-3 mb-4 text-center"
+              style={{ fontSize: '1.5rem' }}
+            >
+              Adventurer Information
+            </div>
+            <hr className="mb-4 mx-auto" style={{ maxWidth: 1200 }} />
+            <div className="text-center">
+              <Button
+                onClick={() =>
+                  set({
+                    modal: 'newCodex',
+                    show: true
+                  })
+                }
+              >
+                New Character
+              </Button>
+            </div>
+            <div className="my-4 mx-auto" style={{ maxWidth: 1200 }}>
+              {library.length > 0 ? (
+                <Library library={library} set={set} />
+              ) : (
+                <div className="text-center">
+                  No codices found in your library.
+                </div>
+              )}
+            </div>
+            <Modals {...modalsState} set={set} getLibrary={getLibrary} />
+          </div>
+        )}
+      </>
     )
   }
 }

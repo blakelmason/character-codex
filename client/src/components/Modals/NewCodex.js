@@ -12,7 +12,7 @@ class NewCodex extends Component {
     return {
       name: '',
       description: '',
-      art: '',
+      artwork: '',
       validated: false
     }
   }
@@ -32,7 +32,7 @@ class NewCodex extends Component {
           .post('/codex/new', {
             name: this.state.name,
             description: this.state.description,
-            art: this.state.art
+            artwork: this.state.artwork
           })
           .then(() => {
             this.setState(this.default)
@@ -59,14 +59,14 @@ class NewCodex extends Component {
     this.setState({ validated: true })
   }
 
-  toggle = () => this.props.set({ modal: [] })
+  close = () => this.props.set({ modal: false })
 
   render() {
-    const { name, description, art, validated } = this.state
+    const { name, description, artwork, validated } = this.state
     return (
-      <Modal show={this.props.show} centered onHide={this.toggle} size="lg">
+      <Modal show={this.props.show} centered onHide={this.close} size="lg">
         <Modal.Header closeButton>
-          <Modal.Title>New Character</Modal.Title>
+          <Modal.Title>New Codex</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={this.submit} noValidate validated={validated}>
@@ -86,8 +86,8 @@ class NewCodex extends Component {
                 required
                 type="text"
                 onChange={this.handler}
-                value={art}
-                name="art"
+                value={artwork}
+                name="artwork"
               />
             </Form.Group>
             <Form.Group>
@@ -103,13 +103,6 @@ class NewCodex extends Component {
             </Form.Group>
             <hr />
             <div className="text-right">
-              <Button
-                variant="secondary"
-                onClick={this.toggle}
-                className="mr-3"
-              >
-                Close
-              </Button>
               <Button variant="primary" type="submit">
                 Create Codex
               </Button>
